@@ -1,0 +1,555 @@
+/* ===================================================================
+   KALKULATOR HPP FROZEN FOOD BY NUGITA DIGITAL
+   Component Styles: Tables, KPI Cards, Simulation, Report, Print
+   =================================================================== */
+
+/* KPI Metric Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-cream-200);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: var(--color-gray-300);
+}
+
+.kpi-card.kpi-primary::before {
+  background: linear-gradient(90deg, var(--color-orange-500), var(--color-orange-400));
+}
+
+.kpi-card.kpi-navy::before {
+  background: linear-gradient(90deg, var(--color-navy-700), var(--color-navy-900));
+}
+
+.kpi-card.kpi-success::before {
+  background: linear-gradient(90deg, var(--color-success), #34D399);
+}
+
+.kpi-card.kpi-warning::before {
+  background: linear-gradient(90deg, var(--color-warning), #FBBF24);
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.kpi-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gray-600);
+}
+
+.kpi-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-cream-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+.kpi-value {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--color-navy-900);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+}
+
+.kpi-subtext {
+  font-size: 0.74rem;
+  color: var(--color-gray-500);
+  margin-top: 6px;
+}
+
+/* Ingredients Table */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-cream-200);
+  background-color: var(--color-white);
+  margin-bottom: 16px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.data-table th {
+  background-color: var(--color-navy-900);
+  color: var(--color-white);
+  font-weight: 700;
+  padding: 12px 14px;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-cream-100);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+  background-color: var(--color-cream-50);
+}
+
+.data-table input.form-control,
+.data-table select.form-control {
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+}
+
+.cell-cost {
+  font-weight: 800;
+  color: var(--color-navy-900);
+  white-space: nowrap;
+  font-feature-settings: 'tnum';
+}
+
+.cell-unit-price {
+  font-size: 0.78rem;
+  color: var(--color-gray-500);
+}
+
+.btn-icon-danger {
+  background: transparent;
+  border: none;
+  color: var(--color-gray-400);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon-danger:hover {
+  color: var(--color-danger);
+  background-color: var(--color-danger-bg);
+}
+
+.table-subtotal-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background-color: var(--color-cream-100);
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  border: 1px solid var(--color-cream-300);
+}
+
+.table-subtotal-bar span.label {
+  font-weight: 700;
+  color: var(--color-navy-900);
+  font-size: 0.95rem;
+}
+
+.table-subtotal-bar span.value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-orange-600);
+}
+
+/* Sticky HPP Summary Bar */
+.sticky-summary-bar {
+  position: sticky;
+  bottom: 0;
+  background-color: rgba(11, 25, 44, 0.96);
+  backdrop-filter: blur(8px);
+  color: var(--color-white);
+  padding: 14px 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  z-index: 25;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  flex-wrap: wrap;
+}
+
+.sticky-summary-items {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.sticky-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.sticky-item-label {
+  font-size: 0.72rem;
+  color: #A0B2C6;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.sticky-item-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-white);
+}
+
+.sticky-item-value.highlight-orange {
+  color: var(--color-orange-400);
+}
+
+.sticky-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Simulation Scenario Cards */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.scenario-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-cream-200);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.scenario-card:hover {
+  border-color: var(--color-orange-500);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.scenario-badge {
+  align-self: flex-start;
+  margin-bottom: 12px;
+}
+
+.scenario-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-navy-900);
+  margin-bottom: 4px;
+}
+
+.scenario-desc {
+  font-size: 0.8rem;
+  color: var(--color-gray-600);
+  margin-bottom: 16px;
+}
+
+.scenario-price {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--color-orange-600);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.scenario-price-label {
+  font-size: 0.74rem;
+  color: var(--color-gray-500);
+  margin-bottom: 16px;
+}
+
+.scenario-breakdown {
+  border-top: 1px dashed var(--color-gray-300);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.84rem;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-gray-700);
+}
+
+.breakdown-row.highlight {
+  font-weight: 700;
+  color: var(--color-navy-900);
+}
+
+.breakdown-row.profit {
+  font-weight: 800;
+  color: var(--color-success);
+}
+
+/* Explainer Box (Margin vs Markup) */
+.explainer-box {
+  background: linear-gradient(135deg, var(--color-navy-900), var(--color-navy-800));
+  color: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  border: 1px solid rgba(255, 107, 0, 0.3);
+}
+
+.explainer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.explainer-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-orange-400);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.explainer-formula {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.88rem;
+  color: #F8F9FA;
+}
+
+.explainer-desc {
+  font-size: 0.82rem;
+  color: #CBD5E0;
+  line-height: 1.5;
+}
+
+/* Recipe Library Grid */
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.recipe-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-cream-200);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.recipe-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-orange-400);
+}
+
+.recipe-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.recipe-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-navy-900);
+  line-height: 1.3;
+}
+
+.recipe-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  background-color: var(--color-cream-50);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  border: 1px solid var(--color-cream-200);
+}
+
+.recipe-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-stat-label {
+  font-size: 0.7rem;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+}
+
+.recipe-stat-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-navy-900);
+}
+
+.recipe-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--color-cream-100);
+  padding-top: 14px;
+}
+
+/* Report Print Container */
+.report-sheet {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-cream-200);
+  padding: 36px;
+  box-shadow: var(--shadow-sm);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--color-navy-900);
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+}
+
+.report-brand h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-navy-900);
+}
+
+.report-brand span {
+  font-size: 0.8rem;
+  color: var(--color-orange-500);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.report-meta {
+  text-align: right;
+  font-size: 0.82rem;
+  color: var(--color-gray-600);
+}
+
+/* In-App Test Suite Runner */
+.test-suite-box {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-cream-200);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.test-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-cream-100);
+  font-size: 0.86rem;
+}
+
+.test-item-row:last-child {
+  border-bottom: none;
+}
+
+.test-item-name {
+  font-weight: 600;
+  color: var(--color-gray-800);
+}
+
+/* Print Media Styles */
+@media print {
+  body {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  .app-sidebar,
+  .app-topbar,
+  .sticky-summary-bar,
+  .no-print,
+  .btn,
+  .toast-container {
+    display: none !important;
+  }
+
+  .app-main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  .page-view {
+    display: none !important;
+    padding: 0 !important;
+  }
+
+  .page-view#view-report {
+    display: block !important;
+  }
+
+  .report-sheet {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+}

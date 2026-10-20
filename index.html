@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator HPP Frozen Food by Nugita Digital</title>
+  <meta name="description" content="Aplikasi akurat hitung biaya produksi, HPP, harga jual, dan margin keuntungan untuk UMKM dan pemula bisnis frozen food.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="src/styles/main.css">
+  <link rel="stylesheet" href="src/styles/components.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-badge">❄️</div>
+        <div class="brand-text">
+          <h1>NUGITA DIGITAL</h1>
+          <span>Kalkulator HPP Frozen</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" data-view="dashboard" id="nav-dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </button>
+        <button type="button" class="nav-item" data-view="calculator" id="nav-calculator">
+          <span class="nav-icon">🧮</span>
+          <span>Kalkulator HPP</span>
+        </button>
+        <button type="button" class="nav-item" data-view="recipes" id="nav-recipes">
+          <span class="nav-icon">📖</span>
+          <span>Resep Tersimpan</span>
+        </button>
+        <button type="button" class="nav-item" data-view="simulation" id="nav-simulation">
+          <span class="nav-icon">🎯</span>
+          <span>Simulasi Harga</span>
+        </button>
+        <button type="button" class="nav-item" data-view="report" id="nav-report">
+          <span class="nav-icon">📑</span>
+          <span>Laporan & Cetak</span>
+        </button>
+        <button type="button" class="nav-item" data-view="settings" id="nav-settings">
+          <span class="nav-icon">⚙️</span>
+          <span>Pengaturan & Uji</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div><strong>Nugita Digital UMKM</strong></div>
+        <div>Solusi Digital Frozen Food</div>
+        <div style="margin-top: 4px; font-size: 0.7rem; color: #64748B;">Versi 1.0.0 • Offline Ready</div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <!-- Topbar -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button type="button" class="mobile-toggle-btn" id="btn-toggle-sidebar" aria-label="Buka Menu">
+            ☰
+          </button>
+          <div class="page-title">
+            <h2 id="topbar-page-title">Dashboard</h2>
+            <p id="topbar-page-desc">Ringkasan produksi dan analisa margin UMKM frozen food Anda.</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="status-pill" id="draft-status-pill">
+            <span class="status-dot"></span>
+            <span id="draft-status-text">Draft Tersinkron</span>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-preset">
+            ✨ Muat Contoh Resep
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEW 1: DASHBOARD -->
+      <section class="page-view active" id="view-dashboard">
+        <!-- Top Stats Row -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-header">
+              <span class="kpi-title">Resep Tersimpan</span>
+              <span class="kpi-icon">📚</span>
+            </div>
+            <div class="kpi-value" id="dash-total-recipes">0</div>
+            <div class="kpi-subtext">Resep aktif siap produksi</div>
+          </div>
+
+          <div class="kpi-card kpi-navy">
+            <div class="kpi-header">
+              <span class="kpi-title">Resep Sedang Aktif</span>
+              <span class="kpi-icon">🍲</span>
+            </div>
+            <div class="kpi-value" style="font-size: 1.1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span id="dash-active-recipe-name">-</span>
+              <span id="dash-active-recipe-badge"></span>
+            </div>
+            <div class="kpi-subtext" id="dash-active-recipe-cat">Belum ada resep terbuka</div>
+          </div>
+
+          <div class="kpi-card kpi-warning">
+            <div class="kpi-header">
+              <span class="kpi-title">HPP Unit Terendah</span>
+              <span class="kpi-icon">🏷️</span>
+            </div>
+            <div class="kpi-value" id="dash-min-hpp">—</div>
+            <div class="kpi-subtext" id="dash-min-hpp-sub">Biaya produksi per pcs</div>
+          </div>
+
+          <div class="kpi-card kpi-success">
+            <div class="kpi-header">
+              <span class="kpi-title">Rata-Rata Margin</span>
+              <span class="kpi-icon">📈</span>
+            </div>
+            <div class="kpi-value" id="dash-avg-margin">—</div>
+            <div class="kpi-subtext" id="dash-avg-margin-sub">Dihitung dari resep berharga jual valid</div>
+          </div>
+        </div>
+
+        <!-- Dashboard Action Banner -->
+        <div class="card" style="background: linear-gradient(135deg, var(--color-navy-900), var(--color-navy-800)); color: var(--color-white); border-color: rgba(255,107,0,0.3);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <span class="badge badge-orange" style="margin-bottom: 8px;">Kalkulator Cepat & Akurat</span>
+              <h3 style="font-size: 1.35rem; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Hitung HPP Produk Frozen Food Baru?</h3>
+              <p style="font-size: 0.88rem; color: #CBD5E0; max-width: 600px;">
+                Cegah salah harga jual, rugi tersembunyi karena susut reject, dan potongan biaya marketplace. Gunakan rumus baku Nugita Digital sekarang.
+              </p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn btn-primary" id="btn-dash-create-recipe">
+                ➕ Buat Resep Baru
+              </button>
+              <button type="button" class="btn btn-secondary" id="btn-dash-open-calc">
+                🧮 Buka Kalkulator
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Recipes & UMKM Guide Grid -->
+        <div class="grid-2">
+          <!-- Recent Recipes -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📖</span>
+                <span>Daftar Resep Siap Pakai</span>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-dash-see-all">Lihat Semua</button>
+            </div>
+            <div id="dash-recipes-list" style="display: flex; flex-direction: column; gap: 10px;">
+              <!-- Loaded via JavaScript -->
+            </div>
+          </div>
+
+          <!-- Cost Calculation Tips -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">💡</span>
+                <span>Panduan HPP Frozen Food UMKM</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.86rem; color: var(--color-gray-700);">
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="font-size: 1.2rem;">⚖️</span>
+                <div>
+                  <strong>Satuan Bahan Baku:</strong> Pastikan harga beli dikonversi ke satuan pemakaian nyata (misal beli 1 kg terigu, pakai 250 gram). Kalkulator Nugita Digital menghitung biaya dasar secara otomatis.
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="font-size: 1.2rem;">🚫</span>
+                <div>
+                  <strong>Cegah Double Counting:</strong> Jika minyak goreng atau plastik vacuum sudah dimasukkan di tabel bahan, jangan menambahkannya kembali di kolom biaya overhead operasional.
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="font-size: 1.2rem;">🛡️</span>
+                <div>
+                  <strong>Cadangan Susut (2% - 5%):</strong> Selalu sisipkan cadangan untuk adonan menempel, kegagalan bentuk, atau susut saat perebusan/pengukusan agar margin tidak tergerus.
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <span style="font-size: 1.2rem;">🛒</span>
+                <div>
+                  <strong>Biaya Marketplace & QRIS:</strong> Saat jualan di Shopee, Tokopedia, atau GoFood, selalu perhitungkan potongan platform (6% - 20%) ke dalam simulasi harga jual.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: KALKULATOR HPP -->
+      <section class="page-view" id="view-calculator">
+        <!-- Recipe Metadata Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-icon">📝</span>
+              <span>Informasi Produk & Batch Produksi</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-calc-new">➕ Reset / Resep Baru</button>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-calc-save-top">💾 Simpan Resep</button>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label" for="input-product-name">
+                <span>Nama Produk <span style="color: var(--color-danger);">*</span></span>
+              </label>
+              <input type="text" class="form-control" id="input-product-name" placeholder="Contoh: Nugget Ayam Keju Crispy" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-product-category">
+                <span>Kategori Produk</span>
+              </label>
+              <select class="form-control" id="input-product-category">
+                <option value="Nugget">Nugget</option>
+                <option value="Dimsum">Dimsum</option>
+                <option value="Pastel / Risoles">Pastel / Risoles</option>
+                <option value="Bakso">Bakso</option>
+                <option value="Sosis">Sosis</option>
+                <option value="Kebab & Roti">Kebab & Roti</option>
+                <option value="Olahan Ikan & Seafood">Olahan Ikan & Seafood</option>
+                <option value="Lauk Siap Saji">Lauk Siap Saji</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-yield-total">
+                <span>Produksi Awal (Total Batch) <span style="color: var(--color-danger);">*</span></span>
+                <span class="form-hint">Total kotor adonan/cetakan</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="input-yield-total" min="1" step="1" value="50">
+                <span class="input-addon">Pcs / Unit</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top: 10px;">
+            <div class="form-group">
+              <label class="form-label" for="input-yield-reject">
+                <span>Produk Ditolak (Reject QC)</span>
+                <span class="form-hint">Cacat/susut (biaya diserap layak jual)</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="input-yield-reject" min="0" step="1" value="2">
+                <span class="input-addon">Pcs / Unit</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-yield-salable">
+                <span>Produk Layak Jual (Bersih) <span style="color: var(--color-danger);">*</span></span>
+                <span class="form-hint">Dasar pembagi HPP per unit</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="input-yield-salable" min="1" step="1" value="48">
+                <span class="input-addon">Pcs / Unit</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-units-per-pack">
+                <span>Isi per Kemasan (Pack) <span style="color: var(--color-danger);">*</span></span>
+                <span class="form-hint">Pcs dalam 1 kemasan</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="input-units-per-pack" min="1" step="1" value="12">
+                <span class="input-addon">Pcs / Pack</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="form-label" for="input-recipe-notes">
+              <span>Catatan Resep / Masa Simpan / Penyimpanan</span>
+            </label>
+            <input type="text" class="form-control" id="input-recipe-notes" placeholder="Contoh: Tahan 3 bulan di suhu -18°C. Kemasan vacuum pouch kedap udara.">
+          </div>
+        </div>
+
+        <!-- Double Count Warning Banner (Dynamic) -->
+        <div id="double-count-alert-container"></div>
+
+        <!-- Ingredients Table Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="card-title-icon">🥦</span>
+                <span>Tabel Rincian Bahan Baku</span>
+              </div>
+              <div class="card-subtitle">
+                Masukkan harga beli & jumlah pemakaian. Kalkulator mengonversi satuan (kg ➔ gram, liter ➔ ml) secara presisi.
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-orange btn-sm" id="btn-add-ingredient">
+              ➕ Tambah Baris Bahan
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="ingredients-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">No</th>
+                  <th style="min-width: 200px;">Nama Bahan</th>
+                  <th style="min-width: 130px;">Harga Beli (Rp)</th>
+                  <th style="min-width: 100px;">Jumlah Beli</th>
+                  <th style="min-width: 120px;">Satuan Beli</th>
+                  <th style="min-width: 100px;">Jumlah Pakai</th>
+                  <th style="min-width: 120px;">Satuan Pakai</th>
+                  <th style="min-width: 140px; text-align: right;">Biaya Pemakaian</th>
+                  <th style="width: 50px; text-align: center;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="ingredients-table-body">
+                <!-- Rows injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-subtotal-bar">
+            <span class="label">Subtotal Biaya Bahan Baku Digunakan:</span>
+            <span class="value" id="calc-subtotal-ingredients">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Production Costs (Overheads) Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="card-title-icon">🏭</span>
+                <span>Biaya Produksi & Operasional Batch</span>
+              </div>
+              <div class="card-subtitle">
+                Biaya kemasan, tenaga kerja, energi, dan cadangan susut untuk 1 batch produksi.
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label" for="input-packaging-unit-cost">
+                <span>Kemasan Utama Batch (per Pack)</span>
+                <span class="form-hint">Wadah primer masuk HPP batch (thinwall/pouch)</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="input-packaging-unit-cost" min="0" step="100" value="1200">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-packaging-count">
+                <span>Jumlah Kemasan Batch (Pack)</span>
+                <span class="form-hint">Total wadah kemasan aktual</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="input-packaging-count" min="0" step="1" value="4">
+                <span class="input-addon">Pack</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-label-cost">
+                <span>Biaya Label & Stiker Batch</span>
+                <span class="form-hint">Total stiker untuk 1 batch</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="input-label-cost" min="0" step="500" value="2000">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top: 10px;">
+            <div class="form-group">
+              <label class="form-label" for="input-labor-cost">
+                <span>Biaya Tenaga Kerja</span>
+                <span class="form-hint">Upah produksi batch</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="input-labor-cost" min="0" step="1000" value="8000">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-energy-cost">
+                <span>Energi (Gas, Listrik, Air)</span>
+                <span class="form-hint">Porsi untuk batch ini</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="input-energy-cost" min="0" step="500" value="4000">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-oil-cost">
+                <span>Biaya Minyak Terpakai</span>
+                <span class="form-hint">Jangan isi jika sudah di bahan</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="input-oil-cost" min="0" step="500" value="0">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top: 10px;">
+            <div class="form-group">
+              <label class="form-label" for="input-transport-cost">
+                <span>Transportasi Belanja Bahan</span>
+                <span class="form-hint">Porsi bensin/ongkir</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="input-transport-cost" min="0" step="500" value="2500">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-other-cost">
+                <span>Biaya Lainnya</span>
+                <span class="form-hint">Kebersihan, sarung tangan, dll</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="input-other-cost" min="0" step="500" value="1000">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-waste-reserve-pct">
+                <span>Cadangan Susut Adonan (%)</span>
+                <span class="form-hint">Standar: 2% – 5% dari biaya produksi</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="input-waste-reserve-pct" min="0" max="50" step="0.5" value="3">
+                <span class="input-addon">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top: 10px;">
+            <div class="form-group">
+              <label class="form-label" for="input-extra-pack-cost">
+                <span>Kemasan Tambahan per Pack (Sekunder/Luar)</span>
+                <span class="form-hint">Kantong/cup saus yang BELUM masuk di batch (Rp 0 jika sudah di batch)</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="input-extra-pack-cost" min="0" step="100" value="0">
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info" style="margin-top: 14px; margin-bottom: 0;">
+            <span>ℹ️</span>
+            <div>
+              <strong>Validasi Kemasan, Reject & Cadangan Susut:</strong>
+              <ul style="margin: 4px 0 0 16px; padding: 0; font-size: 0.82rem; line-height: 1.5;">
+                <li><strong>Penyerapan Biaya Reject:</strong> Seluruh biaya produksi batch dibagi hanya ke <em>produk layak jual</em>. Dengan demikian, biaya unit reject otomatis terserap tanpa perlu ditambahkan biaya reject terpisah.</li>
+                <li><strong>Pemisahan Biaya Kemasan:</strong> Kemasan utama (thinwall/pouch) masuk dalam HPP batch dan teralokasi ke HPP per unit. Kemasan tambahan per pack hanya diisi jika ada biaya sekunder luar (seperti paper bag/kardus) yang belum masuk batch.</li>
+                <li><strong>Dasar Cadangan Susut:</strong> Dihitung persentase dari biaya produksi sebelum cadangan untuk mengantisipasi susut adonan/evaporasi saat proses pengolahan.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.78rem; color: var(--color-gray-600); margin-top: -12px; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; padding: 4px 8px; background-color: var(--color-cream-100); border-radius: var(--radius-sm);">
+          <span>ℹ️</span>
+          <span><strong>Transparansi Presisi:</strong> Kalkulasi internal mempertahankan presisi desimal penuh. Nilai tampilan dibulatkan ke Rupiah terdekat untuk kemudahan membaca, sehingga perkalian angka tampilan unit × isi kemasan mungkin berbeda tipis dari total pack presisi.</span>
+        </div>
+
+        <!-- Real-time HPP Summary Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-navy">
+            <div class="kpi-header">
+              <span class="kpi-title">Biaya Operasional</span>
+              <span class="kpi-icon">📦</span>
+            </div>
+            <div class="kpi-value" id="calc-kpi-overhead">Rp 0</div>
+            <div class="kpi-subtext">Kemasan, label, tenaga & energi</div>
+          </div>
+
+          <div class="kpi-card kpi-warning">
+            <div class="kpi-header">
+              <span class="kpi-title">Cadangan Susut</span>
+              <span class="kpi-icon">🛡️</span>
+            </div>
+            <div class="kpi-value" id="calc-kpi-waste">Rp 0</div>
+            <div class="kpi-subtext" id="calc-kpi-waste-sub">3% dari biaya produksi</div>
+          </div>
+
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-header">
+              <span class="kpi-title">Total HPP 1 Batch</span>
+              <span class="kpi-icon">💰</span>
+            </div>
+            <div class="kpi-value" id="calc-kpi-total-batch">Rp 0</div>
+            <div class="kpi-subtext" id="calc-kpi-batch-sub">Total biaya modal per batch</div>
+          </div>
+
+          <div class="kpi-card kpi-success">
+            <div class="kpi-header">
+              <span class="kpi-title">HPP per Unit (Pcs)</span>
+              <span class="kpi-icon">🏷️</span>
+            </div>
+            <div class="kpi-value" id="calc-kpi-hpp-unit">Rp 0</div>
+            <div class="kpi-subtext" id="calc-kpi-unit-sub">Total HPP ÷ 48 layak jual</div>
+          </div>
+
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-header">
+              <span class="kpi-title">HPP per Kemasan (Pack)</span>
+              <span class="kpi-icon">🎁</span>
+            </div>
+            <div class="kpi-value" id="calc-kpi-hpp-pack">Rp 0</div>
+            <div class="kpi-subtext" id="calc-kpi-pack-sub">Isi 12 pcs per pack</div>
+          </div>
+        </div>
+
+        <!-- Sticky Floating Summary Bar -->
+        <div class="sticky-summary-bar">
+          <div class="sticky-summary-items">
+            <div class="sticky-item">
+              <span class="sticky-item-label">Total HPP Batch</span>
+              <span class="sticky-item-value" id="sticky-hpp-batch">Rp 0</span>
+            </div>
+            <div class="sticky-item">
+              <span class="sticky-item-label">HPP / Unit</span>
+              <span class="sticky-item-value" id="sticky-hpp-unit">Rp 0</span>
+            </div>
+            <div class="sticky-item">
+              <span class="sticky-item-label">HPP / Kemasan</span>
+              <span class="sticky-item-value highlight-orange" id="sticky-hpp-pack">Rp 0</span>
+            </div>
+          </div>
+
+          <div class="sticky-actions">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-sticky-simulate">
+              🎯 Buka Simulasi Harga
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-sticky-save">
+              💾 Simpan Resep
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: RESEP TERSIMPAN -->
+      <section class="page-view" id="view-recipes">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="card-title-icon">📚</span>
+                <span>Katalog Resep Frozen Food Tersimpan</span>
+              </div>
+              <div class="card-subtitle">
+                Kelola resep UMKM Anda: buka di kalkulator, gandakan untuk varian baru, atau ekspor ke CSV.
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-primary btn-sm" id="btn-recipes-create-new">
+                ➕ Buat Resep Baru
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-recipes-export-json">
+                📤 Ekspor Semua (JSON)
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-bottom: 20px;">
+            <div class="form-group">
+              <input type="text" class="form-control" id="recipes-search-input" placeholder="🔍 Cari nama resep...">
+            </div>
+            <div class="form-group">
+              <select class="form-control" id="recipes-category-filter">
+                <option value="">Semua Kategori</option>
+                <option value="Nugget">Nugget</option>
+                <option value="Dimsum">Dimsum</option>
+                <option value="Pastel / Risoles">Pastel / Risoles</option>
+                <option value="Bakso">Bakso</option>
+                <option value="Sosis">Sosis</option>
+                <option value="Kebab & Roti">Kebab & Roti</option>
+                <option value="Olahan Ikan & Seafood">Olahan Ikan & Seafood</option>
+                <option value="Lauk Siap Saji">Lauk Siap Saji</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <select class="form-control" id="recipes-sort-select">
+                <option value="updated-desc">Terakhir Diperbarui</option>
+                <option value="name-asc">Nama (A - Z)</option>
+                <option value="hpp-asc">HPP Terendah</option>
+                <option value="hpp-desc">HPP Tertinggi</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="recipes-grid" id="recipes-cards-grid">
+            <!-- Dynamic Recipe Cards -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: SIMULASI HARGA JUAL -->
+      <section class="page-view" id="view-simulation">
+        <!-- Simulation Control Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="card-title-icon">🎯</span>
+                <span>Laboratorium Simulasi Harga Jual & Margin</span>
+              </div>
+              <div class="card-subtitle">
+                Uji coba skenario target margin dan biaya platform tanpa mengubah data resep asli hingga Anda menekan "Terapkan ke Resep".
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-sim-reset">↺ Reset Parameter</button>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-sim-apply-to-recipe">
+                ✅ Terapkan ke Resep
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-4">
+            <div class="form-group">
+              <label class="form-label" for="sim-input-margin">
+                <span>Target Margin Keuntungan</span>
+                <span class="form-hint" id="sim-margin-badge">35%</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="sim-input-margin" min="1" max="95" step="1" value="35">
+                <span class="input-addon">%</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sim-input-platform-fee">
+                <span>Biaya Platform Marketplace</span>
+                <span class="form-hint">Shopee/Tokopedia</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="sim-input-platform-fee" min="0" max="50" step="0.5" value="6.5">
+                <span class="input-addon">%</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sim-input-payment-fee">
+                <span>Biaya Pembayaran / QRIS</span>
+                <span class="form-hint">MDR QRIS standar 0.7%</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="sim-input-payment-fee" min="0" max="10" step="0.1" value="0.7">
+                <span class="input-addon">%</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sim-input-fixed-fee">
+                <span>Biaya Tetap per Kemasan</span>
+                <span class="form-hint">Packing kardus / ice gel</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="sim-input-fixed-fee" min="0" step="100" value="500">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top: 10px;">
+            <div class="form-group">
+              <label class="form-label" for="sim-input-manual-price">
+                <span>Uji Harga Jual Manual (Opsional)</span>
+                <span class="form-hint">Isi jika ingin tes harga tertentu</span>
+              </label>
+              <div class="input-group">
+                <span class="input-addon-left">Rp</span>
+                <input type="number" class="form-control" id="sim-input-manual-price" min="0" step="500" value="0" placeholder="0 = Gunakan rekomendasi">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sim-rounding-select">
+                <span>Aturan Pembulatan Harga</span>
+                <span class="form-hint">Tampilan harga ritel rapi</span>
+              </label>
+              <select class="form-control" id="sim-rounding-select">
+                <option value="none">Tanpa Pembulatan</option>
+                <option value="100">Bulatkan ke Rp 100 terdekat</option>
+                <option value="500" selected>Bulatkan ke Rp 500 terdekat</option>
+                <option value="1000">Bulatkan ke Rp 1.000 terdekat</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sim-basis-select">
+                <span>Dasar Perhitungan Harga</span>
+                <span class="form-hint">Hitung per pcs atau per kemasan</span>
+              </label>
+              <select class="form-control" id="sim-basis-select">
+                <option value="pack" selected>Per Kemasan (Pack)</option>
+                <option value="unit">Per Unit (Pcs)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Formula Validation Banner (P5 & P10.7) -->
+          <div id="sim-validation-alert" style="display: none; margin-top: 16px;"></div>
+        </div>
+
+        <!-- 4 Skenario Penjualan Komparatif -->
+        <div class="scenario-grid" id="sim-scenarios-container">
+          <!-- Scenario 1: Direct / WhatsApp -->
+          <div class="scenario-card">
+            <span class="badge badge-success scenario-badge">Skenario 1</span>
+            <div class="scenario-name">Direct / WhatsApp / Offline</div>
+            <div class="scenario-desc">Jual langsung ke konsumen tanpa potongan platform.</div>
+            <div class="scenario-price" id="scen-1-price">Rp 0</div>
+            <div class="scenario-price-label">Rekomendasi Harga Jual</div>
+            <div class="scenario-breakdown">
+              <div class="breakdown-row">
+                <span>HPP Acuan:</span>
+                <span id="scen-1-hpp">Rp 0</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Potongan Platform:</span>
+                <span>0.7% (QRIS)</span>
+              </div>
+              <div class="breakdown-row profit">
+                <span>Laba Bersih / Kemasan:</span>
+                <span id="scen-1-profit">Rp 0</span>
+              </div>
+              <div class="breakdown-row highlight">
+                <span>Margin Aktual:</span>
+                <span id="scen-1-margin">0%</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Markup Aktual:</span>
+                <span id="scen-1-markup">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario 2: Reseller / Grosir -->
+          <div class="scenario-card">
+            <span class="badge badge-navy scenario-badge">Skenario 2</span>
+            <div class="scenario-name">Reseller & Grosir Frozen</div>
+            <div class="scenario-desc">Penjualan jumlah besar dengan margin lebih hemat (20%).</div>
+            <div class="scenario-price" id="scen-2-price">Rp 0</div>
+            <div class="scenario-price-label">Rekomendasi Harga Jual</div>
+            <div class="scenario-breakdown">
+              <div class="breakdown-row">
+                <span>HPP Acuan:</span>
+                <span id="scen-2-hpp">Rp 0</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Target Margin:</span>
+                <span>20% (Volume)</span>
+              </div>
+              <div class="breakdown-row profit">
+                <span>Laba Bersih / Kemasan:</span>
+                <span id="scen-2-profit">Rp 0</span>
+              </div>
+              <div class="breakdown-row highlight">
+                <span>Margin Aktual:</span>
+                <span id="scen-2-margin">0%</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Markup Aktual:</span>
+                <span id="scen-2-markup">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario 3: E-Commerce Marketplace -->
+          <div class="scenario-card" style="border-color: var(--color-orange-500);">
+            <span class="badge badge-orange scenario-badge">Skenario 3 (Populer)</span>
+            <div class="scenario-name">Shopee / Tokopedia</div>
+            <div class="scenario-desc">Biaya admin merchant 6.5% + biaya packing aman.</div>
+            <div class="scenario-price" id="scen-3-price">Rp 0</div>
+            <div class="scenario-price-label">Rekomendasi Harga Jual</div>
+            <div class="scenario-breakdown">
+              <div class="breakdown-row">
+                <span>HPP Acuan:</span>
+                <span id="scen-3-hpp">Rp 0</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Biaya Platform + Admin:</span>
+                <span>7.2%</span>
+              </div>
+              <div class="breakdown-row profit">
+                <span>Laba Bersih / Kemasan:</span>
+                <span id="scen-3-profit">Rp 0</span>
+              </div>
+              <div class="breakdown-row highlight">
+                <span>Margin Aktual:</span>
+                <span id="scen-3-margin">0%</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Markup Aktual:</span>
+                <span id="scen-3-markup">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario 4: Food Delivery Online -->
+          <div class="scenario-card">
+            <span class="badge badge-warning scenario-badge">Skenario 4</span>
+            <div class="scenario-name">GoFood / GrabFood</div>
+            <div class="scenario-desc">Komisi merchant 20%. Harga disesuaikan agar margin tetap sehat.</div>
+            <div class="scenario-price" id="scen-4-price">Rp 0</div>
+            <div class="scenario-price-label">Rekomendasi Harga Jual</div>
+            <div class="scenario-breakdown">
+              <div class="breakdown-row">
+                <span>HPP Acuan:</span>
+                <span id="scen-4-hpp">Rp 0</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Komisi Merchant:</span>
+                <span>20.0%</span>
+              </div>
+              <div class="breakdown-row profit">
+                <span>Laba Bersih / Kemasan:</span>
+                <span id="scen-4-profit">Rp 0</span>
+              </div>
+              <div class="breakdown-row highlight">
+                <span>Margin Aktual:</span>
+                <span id="scen-4-margin">0%</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Markup Aktual:</span>
+                <span id="scen-4-markup">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Margin vs Markup Explainer Box (P5 Wajib) -->
+        <div class="explainer-box">
+          <div class="explainer-column">
+            <div class="explainer-title">
+              <span>📊</span>
+              <span>Apa itu Margin Keuntungan?</span>
+            </div>
+            <div class="explainer-formula">Margin (%) = (Laba Bersih ÷ Harga Jual) × 100%</div>
+            <p class="explainer-desc">
+              Margin mengukur persentase laba dari <strong>setiap rupiah omset penjualan</strong> yang Anda terima. Jika harga jual Rp 25.000 dan laba Rp 10.000, margin Anda adalah 40%. Margin tidak akan pernah melebihi 100%.
+            </p>
+          </div>
+
+          <div class="explainer-column">
+            <div class="explainer-title">
+              <span>📈</span>
+              <span>Apa itu Markup Harga?</span>
+            </div>
+            <div class="explainer-formula">Markup (%) = (Laba Bersih ÷ Modal HPP) × 100%</div>
+            <p class="explainer-desc">
+              Markup mengukur berapa persen keuntungan ditambahkan <strong>di atas modal HPP</strong>. Dengan HPP Rp 15.000 dan laba Rp 10.000, markup Anda adalah 66.7%. Banyak pemula keliru mengira markup 50% sama dengan margin 50%!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: LAPORAN & CETAK -->
+      <section class="page-view" id="view-report">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;" class="no-print">
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--color-navy-900);">Lembar Laporan Biaya & HPP</h3>
+            <p style="font-size: 0.82rem; color: var(--color-gray-600);">Siap dicetak sebagai PDF atau diekspor ke format CSV Excel.</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-export-csv">
+              📥 Unduh CSV (Spreadsheet)
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-print-report">
+              🖨️ Cetak / Simpan PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Printable Sheet Card -->
+        <div class="report-sheet" id="report-printable-area">
+          <div class="report-header">
+            <div class="report-brand">
+              <h2>NUGITA DIGITAL</h2>
+              <span>Laporan Kalkulasi HPP Frozen Food</span>
+            </div>
+            <div class="report-meta">
+              <div id="rep-date">Tanggal: 14 Oktober 2026</div>
+              <div>Status: Dokumen Resmi Produksi UMKM</div>
+            </div>
+          </div>
+
+          <!-- Product Details -->
+          <div style="margin-bottom: 24px;">
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--color-navy-900); margin-bottom: 12px; border-bottom: 1px solid var(--color-cream-200); padding-bottom: 6px;">
+              Informasi Resep & Batch
+            </h4>
+            <div class="grid-3" style="font-size: 0.88rem;">
+              <div><strong>Nama Produk:</strong> <span id="rep-product-name">-</span></div>
+              <div><strong>Kategori:</strong> <span id="rep-category">-</span></div>
+              <div><strong>Catatan:</strong> <span id="rep-notes">-</span></div>
+              <div><strong>Produksi Awal:</strong> <span id="rep-yield-total">-</span></div>
+              <div><strong>Produk Ditolak (Reject):</strong> <span id="rep-yield-reject">-</span></div>
+              <div><strong>Produk Layak Jual:</strong> <span id="rep-yield-salable">-</span></div>
+              <div><strong>Isi per Kemasan:</strong> <span id="rep-units-per-pack">-</span></div>
+              <div><strong>Hasil Kemasan:</strong> <span id="rep-packs-summary">-</span></div>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--color-gray-600); margin-top: 8px; font-style: italic;">
+              * Biaya reject fisik produk otomatis diserap langsung ke dalam HPP produk layak jual (total biaya batch dibagi hasil layak jual).
+            </div>
+          </div>
+
+          <!-- Ingredients Table -->
+          <div style="margin-bottom: 24px;">
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--color-navy-900); margin-bottom: 12px; border-bottom: 1px solid var(--color-cream-200); padding-bottom: 6px;">
+              Rincian Pemakaian Bahan Baku
+            </h4>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Bahan</th>
+                    <th>Harga Beli</th>
+                    <th>Beli</th>
+                    <th>Pakai</th>
+                    <th style="text-align: right;">Biaya Pemakaian</th>
+                  </tr>
+                </thead>
+                <tbody id="rep-ingredients-tbody">
+                  <!-- Loaded via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Overheads & HPP Summary Table -->
+          <div style="margin-bottom: 24px;">
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--color-navy-900); margin-bottom: 12px; border-bottom: 1px solid var(--color-cream-200); padding-bottom: 6px;">
+              Struktur Biaya Produksi & HPP
+            </h4>
+            <div class="table-responsive">
+              <table class="data-table">
+                <tbody>
+                  <tr>
+                    <td><strong>Total Biaya Bahan Baku</strong></td>
+                    <td style="text-align: right; font-weight: 700;" id="rep-total-materials">Rp 0</td>
+                  </tr>
+                  <tr>
+                    <td>Biaya Kemasan (Wadah / Vacuum)</td>
+                    <td style="text-align: right;" id="rep-cost-packaging">Rp 0</td>
+                  </tr>
+                  <tr>
+                    <td>Biaya Label & Stiker</td>
+                    <td style="text-align: right;" id="rep-cost-label">Rp 0</td>
+                  </tr>
+                  <tr>
+                    <td>Biaya Tenaga Kerja Produksi</td>
+                    <td style="text-align: right;" id="rep-cost-labor">Rp 0</td>
+                  </tr>
+                  <tr>
+                    <td>Biaya Energi (Gas, Listrik, Air)</td>
+                    <td style="text-align: right;" id="rep-cost-energy">Rp 0</td>
+                  </tr>
+                  <tr>
+                    <td>Biaya Minyak Operasional</td>
+                    <td style="text-align: right;" id="rep-cost-oil">Rp 0</td>
+                  </tr>
+                  <tr>
+                    <td>Biaya Transportasi & Lainnya</td>
+                    <td style="text-align: right;" id="rep-cost-other">Rp 0</td>
+                  </tr>
+                  <tr style="background-color: var(--color-cream-50);">
+                    <td><strong>Total Biaya Sebelum Cadangan</strong></td>
+                    <td style="text-align: right; font-weight: 800;" id="rep-cost-pre-waste">Rp 0</td>
+                  </tr>
+                  <tr>
+                    <td>Cadangan Susut / Reject (<span id="rep-waste-pct">3</span>%)</td>
+                    <td style="text-align: right;" id="rep-cost-waste">Rp 0</td>
+                  </tr>
+                  <tr style="background-color: var(--color-navy-900); color: var(--color-white);">
+                    <td><strong style="color: #FFFFFF;">TOTAL HPP 1 BATCH</strong></td>
+                    <td style="text-align: right; font-weight: 800; font-size: 1.05rem; color: #FF8800;" id="rep-total-hpp-batch">Rp 0</td>
+                  </tr>
+                  <tr style="background-color: var(--color-cream-100);">
+                    <td><strong>HPP PER UNIT (PCS)</strong></td>
+                    <td style="text-align: right; font-weight: 800;" id="rep-hpp-unit">Rp 0</td>
+                  </tr>
+                  <tr style="background-color: var(--color-cream-100);">
+                    <td><strong>HPP PER KEMASAN (PACK)</strong></td>
+                    <td style="text-align: right; font-weight: 800; color: var(--color-orange-600);" id="rep-hpp-pack">Rp 0</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pricing Recommendations Summary -->
+          <div>
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--color-navy-900); margin-bottom: 12px; border-bottom: 1px solid var(--color-cream-200); padding-bottom: 6px;">
+              Rekomendasi Harga Jual & Proyeksi Laba
+            </h4>
+            <div class="grid-2" style="font-size: 0.88rem;">
+              <div style="background-color: var(--color-cream-50); padding: 14px; border-radius: var(--radius-md);">
+                <div><strong>Harga Jual Rekomendasi (Pack):</strong> <span style="font-weight: 800; color: var(--color-orange-600);" id="rep-rec-price">Rp 0</span></div>
+                <div style="margin-top: 4px;">Target Margin: <span id="rep-target-margin">35%</span></div>
+                <div style="margin-top: 4px;">Estimasi Potongan Platform: <span id="rep-est-platform">6.5%</span></div>
+              </div>
+              <div style="background-color: var(--color-cream-50); padding: 14px; border-radius: var(--radius-md);">
+                <div><strong>Laba Bersih per Kemasan:</strong> <span style="font-weight: 800; color: var(--color-success);" id="rep-profit-pack">Rp 0</span></div>
+                <div style="margin-top: 4px;"><strong>Laba Bersih 1 Batch:</strong> <span style="font-weight: 800; color: var(--color-navy-900);" id="rep-profit-batch">Rp 0</span></div>
+                <div style="margin-top: 4px;">Margin Aktual: <span id="rep-actual-margin">35%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 6: PENGATURAN & UJI VALIDASI -->
+      <section class="page-view" id="view-settings">
+        <!-- Settings Form -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="card-title-icon">⚙️</span>
+                <span>Konfigurasi Kalkulator HPP</span>
+              </div>
+              <div class="card-subtitle">
+                Sesuaikan preferensi pembulatan harga dan nilai default aplikasi.
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-save-settings">
+              💾 Simpan Pengaturan
+            </button>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label" for="setting-rounding">
+                <span>Aturan Pembulatan Harga Jual</span>
+              </label>
+              <select class="form-control" id="setting-rounding">
+                <option value="none">Tanpa Pembulatan</option>
+                <option value="100">Ke Rp 100 terdekat</option>
+                <option value="500">Ke Rp 500 terdekat</option>
+                <option value="1000">Ke Rp 1.000 terdekat</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="setting-default-margin">
+                <span>Default Target Margin (%)</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="setting-default-margin" min="5" max="90" value="35">
+                <span class="input-addon">%</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="setting-default-qris">
+                <span>Default Biaya QRIS (%)</span>
+              </label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="setting-default-qris" min="0" max="10" step="0.1" value="0.7">
+                <span class="input-addon">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backup & Restore Data (P7) -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="card-title-icon">💾</span>
+                <span>Cadangan Data (Backup & Restore)</span>
+              </div>
+              <div class="card-subtitle">
+                Data resep Anda disimpan lokal di browser. Buat cadangan file JSON untuk dipindahkan ke komputer lain atau disimpan aman.
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div style="background-color: var(--color-cream-50); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--color-cream-200);">
+              <h4 style="font-weight: 800; color: var(--color-navy-900); margin-bottom: 6px;">Ekspor Cadangan Resep</h4>
+              <p style="font-size: 0.82rem; color: var(--color-gray-600); margin-bottom: 14px;">
+                Unduh seluruh resep tersimpan dan pengaturan Anda menjadi file JSON cadangan.
+              </p>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-backup-download">
+                📥 Unduh File Backup JSON
+              </button>
+            </div>
+
+            <div style="background-color: var(--color-cream-50); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--color-cream-200);">
+              <h4 style="font-weight: 800; color: var(--color-navy-900); margin-bottom: 6px;">Pulihkan dari File JSON</h4>
+              <p style="font-size: 0.82rem; color: var(--color-gray-600); margin-bottom: 14px;">
+                Pilih file JSON backup yang pernah Anda unduh sebelumnya.
+              </p>
+              <div style="display: flex; gap: 8px;">
+                <input type="file" id="input-restore-file" accept=".json" style="display: none;">
+                <button type="button" class="btn btn-outline-orange btn-sm" id="btn-trigger-restore">
+                  📂 Pilih File JSON & Pulihkan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- P10 Interactive In-App Test Suite Runner -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="card-title-icon">🧪</span>
+                <span>P10 Live Test Suite Runner</span>
+              </div>
+              <div class="card-subtitle">
+                Pengujian 12 rumus dan fungsi wajib secara langsung di browser untuk memverifikasi keakuratan rumus aplikasi.
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-run-in-app-tests">
+              ▶️ Jalankan 12 Pengujian Otomatis
+            </button>
+          </div>
+
+          <div class="test-suite-box" id="test-suite-box">
+            <div id="test-results-summary" style="margin-bottom: 16px; font-weight: 700; color: var(--color-navy-900);">
+              Klik tombol di atas untuk menjalankan pengujian otomatis 12 skenario P10.
+            </div>
+            <div id="test-items-container">
+              <!-- Loaded via JavaScript -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" id="modal-confirm">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modal-confirm-title">Konfirmasi Tindakan</h3>
+        <button type="button" class="modal-close-btn" id="modal-confirm-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-confirm-msg" style="font-size: 0.92rem; color: var(--color-gray-700);"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" id="modal-confirm-cancel">Batal</button>
+        <button type="button" class="btn btn-primary btn-sm" id="modal-confirm-ok">Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preset Selector Modal -->
+  <div class="modal-overlay" id="modal-preset">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Pilih Resep Contoh Siap Pakai</h3>
+        <button type="button" class="modal-close-btn" id="modal-preset-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--color-gray-600); margin-bottom: 16px;">
+          Pilih salah satu preset resep frozen food standar untuk langsung dimuat ke dalam kalkulator:
+        </p>
+        <div id="preset-options-list" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Loaded via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" id="modal-preset-cancel">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Main JavaScript Controller -->
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

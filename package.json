@@ -1,0 +1,20 @@
+{
+  "name": "kalkulator-hpp-frozen-food",
+  "version": "1.0.0",
+  "description": "Kalkulator HPP Frozen Food by Nugita Digital - Solusi akurat hitung biaya produksi, HPP, harga jual, dan margin UMKM frozen food.",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Static build ready'",
+    "start": "node server.js",
+    "test": "node --test tests/calculations.test.js"
+  },
+  "keywords": [
+    "hpp",
+    "kalkulator-hpp",
+    "frozen-food",
+    "nugita-digital",
+    "umkm"
+  ],
+  "author": "Nugita Digital",
+  "license": "MIT"
+}
